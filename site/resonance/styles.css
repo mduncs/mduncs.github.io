@@ -83,6 +83,32 @@ a {
   object-fit: contain;
 }
 
+.feature-rail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 0;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(10px, 0.72vw, 12px);
+  letter-spacing: 0.03em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.feature-rail li {
+  padding: 0 14px;
+  border-left: 1px solid rgba(255, 248, 243, 0.38);
+  white-space: nowrap;
+}
+
+.feature-rail li:last-child {
+  padding-right: 0;
+}
+
 .product-stage {
   position: absolute;
   z-index: 2;
@@ -602,6 +628,16 @@ a {
     height: 52px;
   }
 
+  .feature-rail {
+    max-width: 62vw;
+    gap: 7px 0;
+    font-size: 8px;
+  }
+
+  .feature-rail li {
+    padding: 0 8px;
+  }
+
   .product-stage {
     top: 47%;
     width: calc(100vw - 36px);
@@ -711,6 +747,9 @@ a {
     right: 22px;
     bottom: 20px;
     left: 22px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
   }
 
   .footer h1 {
@@ -723,8 +762,7 @@ a {
   }
 
   .download-group {
-    flex-direction: column-reverse;
-    align-items: center;
+    justify-content: flex-end;
     gap: 10px;
   }
 }
@@ -773,6 +811,12 @@ a {
 
   .download-group .download-link {
     white-space: nowrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .feature-rail {
+    display: none;
   }
 }
 
