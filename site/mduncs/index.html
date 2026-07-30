@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Michael Duncan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@200;300;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Noto Serif', Georgia, serif;
+      font-weight: 300;
+      background: #fff;
+      color: #111;
+    }
+
+    #bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 7vh 12vw 3rem;
+      pointer-events: none;
+    }
+
+    .content {
+      width: min(100%, 48rem);
+      pointer-events: auto;
+    }
+
+    .content,
+    footer {
+      color: #111;
+      -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.82);
+      paint-order: stroke fill;
+      text-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.72),
+        0 0 8px rgba(255, 255, 255, 0.42);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6.5vw, 4.5rem);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      margin-bottom: 2.5rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 2.25rem;
+      margin: 0 0 5.5rem 1.125rem;
+    }
+
+    nav a {
+      color: inherit;
+      text-decoration: none;
+      font-size: 1.0625rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      position: relative;
+      transition: opacity 0.2s;
+    }
+
+    nav a::before {
+      content: '';
+      position: absolute;
+      left: -1.125rem;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      background: currentColor;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    nav a:hover {
+      opacity: 0.5;
+    }
+
+    .section-label {
+      margin-bottom: 1.5rem;
+      color: inherit;
+      opacity: 0.55;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.16em;
+      text-transform: lowercase;
+    }
+
+    .projects {
+      list-style: none;
+    }
+
+    .projects li {
+      display: grid;
+      grid-template-columns: 3.75rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: 1.25rem;
+    }
+
+    .projects li + li {
+      margin-top: 1.125rem;
+    }
+
+    .project-link {
+      display: grid;
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: 1.25rem;
+      color: inherit;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.65;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .project-link:hover {
+      opacity: 0.6;
+      transform: translateX(3px);
+    }
+
+    .source-link {
+      color: inherit;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      line-height: 1.65;
+      opacity: 0.48;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .source-link:hover {
+      opacity: 1;
+    }
+
+    nav a:focus-visible,
+    .source-link:focus-visible,
+    .project-link:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    .project-name {
+      color: inherit;
+    }
+
+    footer {
+      margin-top: auto;
+      padding-top: 6rem;
+      font-size: 0.875rem;
+      font-weight: 200;
+      opacity: 0.46;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding-top: 6vh;
+        padding-inline: 6vw;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 11.25vw, 2.5rem);
+      }
+
+      nav {
+        margin-bottom: 4.25rem;
+      }
+
+      .projects li {
+        grid-template-columns: 3.25rem minmax(0, 1fr);
+        gap: 0.75rem;
+      }
+
+      .project-link {
+        display: block;
+        min-width: 0;
+      }
+
+      .project-name,
+      .project-description {
+        display: block;
+      }
+
+      .project-description {
+        overflow-wrap: anywhere;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <main>
+    <div class="content">
+      <h1>Michael Duncan</h1>
+
+      <nav>
+        <a href="https://github.com/mduncs">github</a>
+        <a href="mailto:themduncs@gmail.com">contact</a>
+      </nav>
+
+      <section aria-labelledby="projects-label">
+        <h2 class="section-label" id="projects-label">selected projects</h2>
+        <ul class="projects">
+          <li>
+            <a class="source-link" href="https://github.com/mduncs/nodraw-app" target="_blank" rel="noreferrer" aria-label="NoDraw source on GitHub">github</a>
+            <a class="project-link" href="/nodraw/">
+              <span class="project-name">nodraw</span>
+              <span class="project-description">media collection and archiving tool for data you own</span>
+            </a>
+          </li>
+          <li>
+            <a class="source-link" href="https://github.com/mduncs/resonance-app" target="_blank" rel="noreferrer" aria-label="Resonance source on GitHub">github</a>
+            <a class="project-link" href="/resonance/">
+              <span class="project-name">resonance</span>
+              <span class="project-description">experimental navidrome player modeled after apple music</span>
+            </a>
+          </li>
+          <li>
+            <a class="source-link" href="https://github.com/mduncs/sunpaper" target="_blank" rel="noreferrer" aria-label="Sunpaper source on GitHub">github</a>
+            <a class="project-link" href="/sunpaper/">
+              <span class="project-name">sunpaper</span>
+              <span class="project-description">macos utility for automated video wallpaper changes</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>more projects to come soon</footer>
+  </main>
+
+  <script type="module">
+    // Minimal bezier gradient background - inlined
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    const GRADIENT_W = 800, GRADIENT_H = 600, CURVE_SIZE = 160;
+    const COLORS = [
+      {r:248,g:113,b:113},{r:239,g:68,b:68},
+      {r:251,g:146,b:60},{r:249,g:115,b:22},
+      {r:250,g:204,b:21},{r:234,g:179,b:8},
+      {r:74,g:222,b:128},{r:34,g:197,b:94},
+      {r:96,g:165,b:250},{r:59,g:130,b:246},
+      {r:192,g:132,b:252},{r:168,g:85,b:247},
+      {r:244,g:114,b:182},{r:236,g:72,b:153}
+    ];
+
+    const MOTION_SPEED = 1.5;
+    const COLOR_CYCLE_SECONDS = 7;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let xAnchors = [], yAnchors = [], color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    let nextColor = color, displayColor = color;
+    let xLUT, yLUT;
+
+    function bezier(p0, p1, p2, p3, t) {
+      const mt = 1-t, mt2 = mt*mt, mt3 = mt2*mt, t2 = t*t, t3 = t2*t;
+      return { x: mt3*p0.x + 3*mt2*t*p1.x + 3*mt*t2*p2.x + t3*p3.x, y: mt3*p0.y + 3*mt2*t*p1.y + 3*mt*t2*p2.y + t3*p3.y };
+    }
+
+    function getSegs(anchors) {
+      const segs = [];
+      for (let i = 0; i < anchors.length - 1; i++) {
+        const a0 = anchors[i], a1 = anchors[i+1];
+        segs.push({
+          p0: a0.vertex, p3: a1.vertex,
+          p1: a0.handleOut ? {x: a0.vertex.x + a0.handleOut.x, y: a0.vertex.y + a0.handleOut.y} : a0.vertex,
+          p2: a1.handleIn ? {x: a1.vertex.x + a1.handleIn.x, y: a1.vertex.y + a1.handleIn.y} : a1.vertex
+        });
+      }
+      return segs;
+    }
+
+    function sampleX(x) {
+      for (const s of getSegs(xAnchors)) {
+        if (x >= Math.min(s.p0.x, s.p3.x) && x <= Math.max(s.p0.x, s.p3.x)) {
+          let lo = 0, hi = 1;
+          for (let i = 0; i < 20; i++) { const mid = (lo+hi)/2; if (bezier(s.p0,s.p1,s.p2,s.p3,mid).x < x) lo = mid; else hi = mid; }
+          return 1 - bezier(s.p0,s.p1,s.p2,s.p3,(lo+hi)/2).y / CURVE_SIZE;
+        }
+      }
+      return 0;
+    }
+
+    function sampleY(y) {
+      for (const s of getSegs(yAnchors)) {
+        if (y >= Math.min(s.p0.y, s.p3.y) && y <= Math.max(s.p0.y, s.p3.y)) {
+          let lo = 0, hi = 1;
+          for (let i = 0; i < 20; i++) { const mid = (lo+hi)/2; if (bezier(s.p0,s.p1,s.p2,s.p3,mid).y < y) lo = mid; else hi = mid; }
+          return bezier(s.p0,s.p1,s.p2,s.p3,(lo+hi)/2).x / CURVE_SIZE;
+        }
+      }
+      return 0;
+    }
+
+    function randomize() {
+      const xMid = Math.floor(Math.random() * 3), yMid = Math.floor(Math.random() * 3);
+      xAnchors = [{vertex:{x:0,y:Math.random()*CURVE_SIZE},handleOut:{x:50+Math.random()*150,y:(Math.random()-0.5)*80}}];
+      for (let i = 0; i < xMid; i++) xAnchors.push({vertex:{x:(i+1)/(xMid+1)*GRADIENT_W,y:Math.random()*CURVE_SIZE},handleIn:{x:-30-Math.random()*70,y:(Math.random()-0.5)*60},handleOut:{x:30+Math.random()*70,y:(Math.random()-0.5)*60}});
+      xAnchors.push({vertex:{x:GRADIENT_W,y:Math.random()*CURVE_SIZE},handleIn:{x:-50-Math.random()*150,y:(Math.random()-0.5)*80}});
+
+      yAnchors = [{vertex:{x:Math.random()*CURVE_SIZE,y:0},handleOut:{x:(Math.random()-0.5)*80,y:50+Math.random()*150}}];
+      for (let i = 0; i < yMid; i++) yAnchors.push({vertex:{x:Math.random()*CURVE_SIZE,y:(i+1)/(yMid+1)*GRADIENT_H},handleIn:{x:(Math.random()-0.5)*60,y:-30-Math.random()*70},handleOut:{x:(Math.random()-0.5)*60,y:30+Math.random()*70}});
+      yAnchors.push({vertex:{x:Math.random()*CURVE_SIZE,y:GRADIENT_H},handleIn:{x:(Math.random()-0.5)*80,y:-50-Math.random()*150}});
+
+      const available = COLORS.filter(c => c !== color);
+      color = available[Math.floor(Math.random() * available.length)];
+      nextColor = COLORS.filter(c => c !== color)[Math.floor(Math.random() * (COLORS.length - 1))];
+      displayColor = color;
+    }
+
+    function rebuildLUTs(w, h) {
+      xLUT = new Float32Array(w); yLUT = new Float32Array(h);
+      for (let i = 0; i < w; i++) xLUT[i] = sampleX((i/w)*GRADIENT_W);
+      for (let i = 0; i < h; i++) yLUT[i] = sampleY((i/h)*GRADIENT_H);
+    }
+
+    function render() {
+      const w = canvas.width, h = canvas.height;
+      rebuildLUTs(w, h);
+      const img = ctx.createImageData(w, h), d = img.data;
+      for (let py = 0; py < h; py++) {
+        const ya = yLUT[py], row = py * w * 4;
+        for (let px = 0; px < w; px++) {
+          const idx = row + px * 4, a = xLUT[px] * ya;
+          d[idx] = displayColor.r; d[idx+1] = displayColor.g; d[idx+2] = displayColor.b; d[idx+3] = (a*255)|0;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+
+    // Animation state
+    let baseAnchors, animPts, startTime, lastSwap = 0, nextSwap = 2.25, lastColorSwap = 0;
+
+    function initAnim() {
+      baseAnchors = { x: JSON.parse(JSON.stringify(xAnchors)), y: JSON.parse(JSON.stringify(yAnchors)) };
+      animPts = {
+        x: xAnchors.map(() => [{ph:Math.random()*6.28,fr:0.16+Math.random()*0.28,am:8+Math.random()*10,fade:0.65+Math.random()*0.35,target:1}]),
+        y: yAnchors.map(() => [{ph:Math.random()*6.28,fr:0.14+Math.random()*0.26,am:8+Math.random()*10,fade:0.65+Math.random()*0.35,target:1}])
+      };
+    }
+
+    function applyAnim(t) {
+      for (let i = 0; i < xAnchors.length; i++) {
+        const p = animPts.x[i][0], b = baseAnchors.x[i];
+        let y = b.vertex.y + Math.sin(t*p.fr+p.ph)*p.am*p.fade;
+        xAnchors[i].vertex.y = Math.max(0,Math.min(CURVE_SIZE,y));
+      }
+      for (let i = 0; i < yAnchors.length; i++) {
+        const p = animPts.y[i][0], b = baseAnchors.y[i];
+        let x = b.vertex.x + Math.sin(t*p.fr+p.ph)*p.am*p.fade;
+        yAnchors[i].vertex.x = Math.max(0,Math.min(CURVE_SIZE,x));
+      }
+    }
+
+    function updateColor(t) {
+      while (t - lastColorSwap >= COLOR_CYCLE_SECONDS) {
+        lastColorSwap += COLOR_CYCLE_SECONDS;
+        color = nextColor;
+        const available = COLORS.filter(c => c !== color);
+        nextColor = available[Math.floor(Math.random() * available.length)];
+      }
+      const rawMix = (t - lastColorSwap) / COLOR_CYCLE_SECONDS;
+      const mix = rawMix * rawMix * (3 - 2 * rawMix);
+      displayColor = {
+        r: Math.round(color.r + (nextColor.r - color.r) * mix),
+        g: Math.round(color.g + (nextColor.g - color.g) * mix),
+        b: Math.round(color.b + (nextColor.b - color.b) * mix)
+      };
+    }
+
+    function loop(now) {
+      const t = (now - startTime) / 1000;
+      if (t - lastSwap > nextSwap) {
+        lastSwap = t; nextSwap = 2 + Math.random()*1.25;
+        animPts.x.forEach(arr => arr.forEach(p => { p.target = 0.55 + Math.random()*0.45; }));
+        animPts.y.forEach(arr => arr.forEach(p => { p.target = 0.55 + Math.random()*0.45; }));
+      }
+      animPts.x.forEach(arr => arr.forEach(p => { p.fade += (p.target - p.fade) * 0.02; }));
+      animPts.y.forEach(arr => arr.forEach(p => { p.fade += (p.target - p.fade) * 0.02; }));
+      updateColor(t);
+      applyAnim(t * MOTION_SPEED);
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    randomize();
+    resize();
+    initAnim();
+    window.addEventListener('resize', resize);
+    startTime = performance.now();
+    if (reducedMotion) {
+      render();
+    } else {
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resonance — Your music, arranged around you</title>
+  <meta name="description" content="An experimental native macOS client for Navidrome, made to bring music hoarding into the streaming era.">
+  <meta property="og:title" content="Resonance">
+  <meta property="og:description" content="Your music, arranged around you.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/resonance-social.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Resonance">
+  <meta name="twitter:description" content="Your music, arranged around you.">
+  <meta name="twitter:image" content="assets/resonance-social.png">
+  <link rel="icon" href="assets/favicon.png?v=2" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="assets/resonance-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="sheet">
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <p class="brand" aria-label="Resonance">
+        <img src="assets/resonance-mark.png" alt="" width="64" height="64">
+        <span>Resonance</span>
+      </p>
+    </header>
+
+    <section class="product-stage" aria-labelledby="tagline">
+      <div class="app-shadow" aria-hidden="true"></div>
+      <figure class="app-window demo-window" aria-label="Resonance product demo">
+        <video
+          class="demo-video"
+          autoplay
+          controls
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="assets/resonance-social.png"
+        >
+          <source src="resonance-demo.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <footer class="footer">
+      <h1 id="tagline">Your music,<br>arranged around you.</h1>
+      <div class="download-group">
+        <a class="source-link" href="https://github.com/mduncs/resonance-app">View source</a>
+        <a class="download-link" href="https://github.com/mduncs/resonance-app/releases/latest">
+          Download for Mac <b>↓</b>
+        </a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

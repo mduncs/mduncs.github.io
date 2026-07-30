@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+bun.lockb
+*.log
+/tmp/
+
+# Local design tooling and discarded site explorations.
+/toys/
+/site/index.html
+/site/_lab/
+/site/v*/

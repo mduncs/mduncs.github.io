@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sunpaper — Video wallpaper that follows the sun</title>
+  <meta
+    name="description"
+    content="A native Mac app that changes Apple aerial video wallpaper with the time of day."
+  >
+  <meta property="og:title" content="Sunpaper — Video wallpaper that follows the sun">
+  <meta
+    property="og:description"
+    content="A native Mac app that changes Apple aerial video wallpaper with the time of day."
+  >
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="sunpaper-icon.png">
+  <link rel="apple-touch-icon" href="sunpaper-icon.png">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@500&family=Geist:wght@400;560;620;720&display=swap");
+
+    :root {
+      --paper: #f3efe7;
+      --ink: #25262a;
+      --muted: #817b72;
+      --coral: #ff5a48;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Geist", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .sheet {
+      position: relative;
+      width: 100%;
+      min-height: 100svh;
+      overflow: hidden;
+      padding: 25px 27px 26px;
+      isolation: isolate;
+    }
+
+    .sheet::before {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 18% 20%, rgb(255 193 153 / 34%), transparent 29%),
+        radial-gradient(circle at 84% 72%, rgb(134 169 206 / 23%), transparent 30%),
+        var(--paper);
+      content: "";
+    }
+
+    .topbar,
+    .bottom {
+      position: absolute;
+      right: 27px;
+      left: 27px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .topbar {
+      top: 25px;
+      align-items: flex-start;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 720;
+      letter-spacing: -0.055em;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .wordmark b {
+      color: var(--coral);
+      font-size: 37px;
+      line-height: 0;
+    }
+
+    .sun-mark {
+      position: relative;
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+    }
+
+    .sun-mark::before {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--coral);
+      content: "";
+      box-shadow:
+        0 -17px 0 -10px var(--coral),
+        0 17px 0 -10px var(--coral),
+        17px 0 0 -10px var(--coral),
+        -17px 0 0 -10px var(--coral),
+        12px 12px 0 -10px var(--coral),
+        -12px -12px 0 -10px var(--coral),
+        12px -12px 0 -10px var(--coral),
+        -12px 12px 0 -10px var(--coral);
+    }
+
+    .demo {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      padding: 68px 44px 15vh;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .demo-glow {
+      position: absolute;
+      width: min(72vw, 980px);
+      aspect-ratio: 1.8;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 25% 46%, rgb(255 90 72 / 62%), transparent 32%),
+        radial-gradient(circle at 52% 32%, rgb(247 95 163 / 50%), transparent 34%),
+        radial-gradient(circle at 72% 58%, rgb(72 112 165 / 58%), transparent 39%);
+      filter: blur(56px);
+      opacity: 0.54;
+      transform: scale(0.92);
+    }
+
+    .demo-frame {
+      position: relative;
+      width: min(calc(100vw - 88px), calc((85svh - 68px) / 0.5625));
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid rgb(255 255 255 / 48%);
+      border-radius: 18px;
+      background: #162234;
+      box-shadow:
+        0 35px 85px rgb(61 47 35 / 28%),
+        0 6px 20px rgb(61 47 35 / 16%),
+        inset 0 1px 0 rgb(255 255 255 / 40%);
+      pointer-events: auto;
+    }
+
+    .demo-frame::before {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(140deg, rgb(255 139 95 / 55%), transparent 40%),
+        linear-gradient(330deg, rgb(52 91 148 / 70%), transparent 48%),
+        #263b59;
+      content: "";
+    }
+
+    .demo-video {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      object-fit: contain;
+    }
+
+    .bottom {
+      bottom: 26px;
+      align-items: flex-end;
+      gap: 28px;
+    }
+
+    .statement h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(26px, 3.2vw, 46px);
+      font-weight: 560;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 19px;
+    }
+
+    .source-link {
+      color: var(--muted);
+      font-family: "Geist Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      text-underline-offset: 3px;
+      text-transform: uppercase;
+    }
+
+    .download {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 0 21px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 15px;
+      font-weight: 620;
+      letter-spacing: -0.025em;
+      text-decoration: none;
+      transition:
+        transform 160ms ease,
+        background-color 160ms ease;
+    }
+
+    .download:hover {
+      background: #000;
+      transform: translateY(-2px);
+    }
+
+    .download:focus-visible,
+    .source-link:focus-visible,
+    .wordmark:focus-visible {
+      outline: 3px solid var(--coral);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 760px) {
+      .sheet {
+        min-height: 760px;
+        padding: 20px;
+      }
+
+      .topbar,
+      .bottom {
+        right: 20px;
+        left: 20px;
+      }
+
+      .topbar {
+        top: 20px;
+      }
+
+      .demo {
+        padding: 82px 20px 210px;
+      }
+
+      .demo-frame {
+        width: 100%;
+        border-radius: 12px;
+      }
+
+      .demo-glow {
+        width: 110vw;
+      }
+
+      .bottom {
+        bottom: 20px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+      }
+
+      .statement {
+        text-align: center;
+      }
+
+      .statement h1 {
+        font-size: clamp(29px, 9vw, 42px);
+      }
+
+      .actions {
+        flex-direction: column-reverse;
+        gap: 14px;
+      }
+
+      .download {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .download {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header class="topbar">
+      <a class="wordmark" href="./" aria-label="Sunpaper home">
+        <span class="sun-mark" aria-hidden="true"></span>
+        <span>Sunpaper</span>
+        <b aria-hidden="true">.</b>
+      </a>
+    </header>
+
+    <section class="demo" aria-label="Sunpaper product demo">
+      <div class="demo-glow" aria-hidden="true"></div>
+      <div class="demo-frame">
+        <video
+          class="demo-video"
+          autoplay
+          controls
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="sunpaper-menu.png"
+        >
+          <source src="sunpaper-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+    </section>
+
+    <footer class="bottom">
+      <div class="statement">
+        <h1>Video wallpaper that follows the sun.</h1>
+      </div>
+
+      <div class="actions">
+        <a
+          class="source-link"
+          href="https://github.com/mduncs/sunpaper"
+          target="_blank"
+          rel="noreferrer"
+        >View source</a>
+        <a
+          class="download"
+          href="https://github.com/mduncs/sunpaper/releases/latest"
+        >
+          Download for Mac
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
