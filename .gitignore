@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+bun.lockb
+*.log
+/tmp/
+
+# Local design tooling and archived site explorations.
+/toys/
+/archive/

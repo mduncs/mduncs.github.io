@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      // Theme: follows the system setting until the visitor flips it. Flipping back to the system's theme follows the system again.
+      (() => {
+        const icons = {
+          light: '<circle cx="8" cy="8" r="2.75" fill="currentColor"/><path d="M8 1.5v1.25M8 13.25v1.25M1.5 8h1.25M13.25 8h1.25M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+          dark: '<path d="M13.25 9.9A5.75 5.75 0 0 1 6.1 2.75a5.75 5.75 0 1 0 7.15 7.15z" fill="currentColor"/>'
+        };
+        const root = document.documentElement;
+        const system = matchMedia('(prefers-color-scheme: dark)');
+        const systemTheme = () => (system.matches ? 'dark' : 'light');
+        const stored = () => {
+          try { const t = localStorage.getItem('md-theme'); return t === 'light' || t === 'dark' ? t : null; } catch { return null; }
+        };
+        let choice = stored(), button = null;
+
+        function apply() {
+          const theme = choice || systemTheme();
+          root.dataset.theme = theme;
+          if (!button) return;
+          const next = theme === 'dark' ? 'light' : 'dark';
+          button.innerHTML = `<svg viewBox="0 0 16 16" aria-hidden="true">${icons[next]}</svg>`;
+          button.title = `Switch to ${next} mode`;
+          button.setAttribute('aria-label', button.title);
+        }
+
+        apply();
+        system.addEventListener('change', apply);
+        addEventListener('storage', () => { choice = stored(); apply(); });
+        addEventListener('DOMContentLoaded', () => {
+          // A page can place its own .theme-toggle; otherwise it goes in the corner.
+          button = document.querySelector('.theme-toggle')
+            || document.body.appendChild(Object.assign(document.createElement('button'), { type: 'button', className: 'theme-toggle' }));
+          button.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            choice = next === systemTheme() ? null : next;
+            try { choice ? localStorage.setItem('md-theme', choice) : localStorage.removeItem('md-theme'); } catch {}
+            apply();
+          });
+          apply();
+        });
+      })();
+    </script>
+    <title>Session Atlas — a terminal archive for coding-agent sessions</title>
+    <meta
+      name="description"
+      content="Session Atlas turns Claude Code and Codex transcripts into a searchable terminal archive. Work in progress."
+    >
+    <meta property="og:title" content="Session Atlas">
+    <meta property="og:description" content="Coding agents forget. The transcripts don't.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='3' y='3' width='10' height='10' transform='rotate(45 8 8)' fill='%23ffaf00'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      /* Dark is the terminal default from styles.css; light is the same terminal printed
+         on amber graph paper, with ink-dark text. */
+      :root {
+        --toggle: var(--muted);
+        --toggle-hover: var(--accent);
+      }
+
+      :root[data-theme="light"] {
+        color-scheme: light;
+        --paper: #f5efe0;
+        --ink: #17140e;
+        --muted: #665e4f;
+        --line: rgba(184, 119, 0, 0.45);
+        --accent: #b87700;
+        --toggle-hover: var(--ink);
+      }
+
+      [data-theme="light"] body {
+        background-image:
+          linear-gradient(rgba(255, 175, 0, 0.16) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 175, 0, 0.16) 1px, transparent 1px);
+      }
+
+      [data-theme="light"] .product {
+        box-shadow: 0 24px 70px rgba(70, 45, 0, 0.22);
+      }
+
+      /* theme toggle: a quiet icon button pinned to the top-right corner */
+      .theme-toggle {
+        position: fixed;
+        top: 6px;
+        right: 6px;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: none;
+        color: var(--toggle);
+        cursor: pointer;
+        transition: color 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus-visible { color: var(--toggle-hover); }
+      .theme-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+      .theme-toggle svg { display: block; width: 16px; height: 16px; }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <header class="masthead">
+        <a class="brand" href="./" aria-label="Session Atlas home">
+          <span>session atlas</span>
+        </a>
+
+        <ul class="feature-rail" aria-label="Core features">
+          <li>every harness</li>
+          <li>full-text search</li>
+          <li>warm-start export</li>
+          <li>favorites + lineage</li>
+          <li>read-only sources</li>
+        </ul>
+      </header>
+
+      <!-- Demo slot: the software-demo-automation stage script replaces the
+           poster and source values below. Until then the pending panel shows. -->
+      <figure class="product" aria-label="Session Atlas product demo">
+        <video
+          autoplay
+          controls
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="demos/2026-09-30-v1/atlas-poster-f49acad09ec7.jpg"
+        >
+          <source src="demos/2026-09-30-v1/atlas-demo-9620112901c0.mp4" type="video/mp4">
+        </video>
+        <div class="pending">demo in production</div>
+      </figure>
+
+      <footer class="closing">
+        <div class="statement">
+          <h1>Agents forget. Transcripts don't.</h1>
+        </div>
+
+        <nav class="actions" aria-label="Session Atlas links">
+          <span class="note">Work in progress</span>
+          <a
+            class="source-link"
+            href="https://github.com/mduncs/session-atlas-app"
+            aria-label="View the Session Atlas repository on GitHub"
+          >View Source</a>
+        </nav>
+      </footer>
+    </main>
+    <script>
+      const product = document.querySelector('.product');
+      const source = product.querySelector('video source');
+      if (/\/demos\/pending\//.test(source.src)) product.classList.add('is-pending');
+    </script>
+  </body>
+</html>
