@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      // Theme: follows the system setting until the visitor flips it. Flipping back to the system's theme follows the system again.
+      (() => {
+        const icons = {
+          light: '<circle cx="8" cy="8" r="2.75" fill="currentColor"/><path d="M8 1.5v1.25M8 13.25v1.25M1.5 8h1.25M13.25 8h1.25M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+          dark: '<path d="M13.25 9.9A5.75 5.75 0 0 1 6.1 2.75a5.75 5.75 0 1 0 7.15 7.15z" fill="currentColor"/>'
+        };
+        const root = document.documentElement;
+        const system = matchMedia('(prefers-color-scheme: dark)');
+        const systemTheme = () => (system.matches ? 'dark' : 'light');
+        const stored = () => {
+          try { const t = localStorage.getItem('md-theme'); return t === 'light' || t === 'dark' ? t : null; } catch { return null; }
+        };
+        let choice = stored(), button = null;
+
+        function apply() {
+          const theme = choice || systemTheme();
+          root.dataset.theme = theme;
+          if (!button) return;
+          const next = theme === 'dark' ? 'light' : 'dark';
+          button.innerHTML = `<svg viewBox="0 0 16 16" aria-hidden="true">${icons[next]}</svg>`;
+          button.title = `Switch to ${next} mode`;
+          button.setAttribute('aria-label', button.title);
+        }
+
+        apply();
+        system.addEventListener('change', apply);
+        addEventListener('storage', () => { choice = stored(); apply(); });
+        addEventListener('DOMContentLoaded', () => {
+          // A page can place its own .theme-toggle; otherwise it goes in the corner.
+          button = document.querySelector('.theme-toggle')
+            || document.body.appendChild(Object.assign(document.createElement('button'), { type: 'button', className: 'theme-toggle' }));
+          button.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            choice = next === systemTheme() ? null : next;
+            try { choice ? localStorage.setItem('md-theme', choice) : localStorage.removeItem('md-theme'); } catch {}
+            apply();
+          });
+          apply();
+        });
+      })();
+    </script>
+    <title>Splay — high performance, every kind of media</title>
+    <meta
+      name="description"
+      content="Splay puts images, GIFs, videos and whole PDF books on one fast zoomable board on macOS. Experimental."
+    >
+    <meta property="og:title" content="Splay">
+    <meta property="og:description" content="High performance, every kind of media.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="assets/favicon.png" sizes="64x64" type="image/png">
+    <link rel="apple-touch-icon" href="assets/splay-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      /* Light is the gray-board default from styles.css; dark is the same board at night. */
+      :root {
+        --muted: #646461; /* a touch darker than styles.css, for AA contrast */
+        --toggle: var(--muted);
+        --toggle-hover: var(--ink);
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --paper: #141413;
+        --ink: #e6e6e3;
+        --muted: #969692;
+        --line: rgba(230, 230, 227, 0.18);
+      }
+
+      [data-theme="dark"] body {
+        background-image:
+          linear-gradient(rgba(230, 230, 227, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(230, 230, 227, 0.035) 1px, transparent 1px);
+      }
+
+      [data-theme="dark"] .product {
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+      }
+
+      [data-theme="dark"] .download strong {
+        color: #a87200;
+      }
+
+      [data-theme="dark"] .download:hover,
+      [data-theme="dark"] .download:hover strong {
+        color: var(--paper);
+      }
+
+      /* theme toggle: a quiet icon button pinned to the top-right corner */
+      .theme-toggle {
+        position: fixed;
+        top: 6px;
+        right: 6px;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: none;
+        color: var(--toggle);
+        cursor: pointer;
+        transition: color 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus-visible { color: var(--toggle-hover); }
+      .theme-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+      .theme-toggle svg { display: block; width: 16px; height: 16px; }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <header class="masthead">
+        <a class="brand" href="./" aria-label="Splay home">
+          <span>splay</span>
+        </a>
+
+        <ul class="feature-rail" aria-label="Core features">
+          <li>every page at once</li>
+          <li>continuous zoom</li>
+          <li>video plays in place</li>
+          <li>images, video, PDF</li>
+          <li>fully offline</li>
+        </ul>
+      </header>
+
+      <!-- Demo slot: the software-demo-automation stage script replaces the
+           poster and source values below. Until then the pending panel shows. -->
+      <figure class="product" aria-label="Splay product demo">
+        <video
+          autoplay
+          controls
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="demos/2026-10-05-v1/splay-poster-780ce8601547.jpg"
+        >
+          <source src="demos/2026-10-05-v1/splay-demo-2a9d8dd25791.mp4" type="video/mp4">
+        </video>
+        <div class="pending">demo in production</div>
+      </figure>
+
+      <footer class="closing">
+        <div class="statement">
+          <h1>High performance, every kind of media.</h1>
+        </div>
+
+        <nav class="actions" aria-label="Splay links">
+          <a
+            class="source-link"
+            href="https://github.com/mduncs/splay-app"
+            aria-label="View the Splay repository on GitHub"
+          >View Source</a>
+          <a
+            class="download"
+            href="https://github.com/mduncs/splay-app/releases/latest"
+            aria-label="Download Splay from GitHub Releases"
+          >
+            <span>Download for Mac</span>
+            <strong>↓</strong>
+          </a>
+          <span class="note">Experimental · macOS 14+</span>
+        </nav>
+      </footer>
+    </main>
+    <script>
+      const product = document.querySelector('.product');
+      const source = product.querySelector('video source');
+      if (/\/demos\/pending\//.test(source.src)) product.classList.add('is-pending');
+    </script>
+  </body>
+</html>

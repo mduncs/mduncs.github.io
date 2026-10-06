@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Theme: follows the system setting until the visitor flips it. Flipping back to the system's theme follows the system again.
+    (() => {
+      const icons = {
+        light: '<circle cx="8" cy="8" r="2.75" fill="currentColor"/><path d="M8 1.5v1.25M8 13.25v1.25M1.5 8h1.25M13.25 8h1.25M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+        dark: '<path d="M13.25 9.9A5.75 5.75 0 0 1 6.1 2.75a5.75 5.75 0 1 0 7.15 7.15z" fill="currentColor"/>'
+      };
+      const root = document.documentElement;
+      const system = matchMedia('(prefers-color-scheme: dark)');
+      const systemTheme = () => (system.matches ? 'dark' : 'light');
+      const stored = () => {
+        try { const t = localStorage.getItem('md-theme'); return t === 'light' || t === 'dark' ? t : null; } catch { return null; }
+      };
+      let choice = stored(), button = null;
+
+      function apply() {
+        const theme = choice || systemTheme();
+        root.dataset.theme = theme;
+        if (!button) return;
+        const next = theme === 'dark' ? 'light' : 'dark';
+        button.innerHTML = `<svg viewBox="0 0 16 16" aria-hidden="true">${icons[next]}</svg>`;
+        button.title = `Switch to ${next} mode`;
+        button.setAttribute('aria-label', button.title);
+      }
+
+      apply();
+      system.addEventListener('change', apply);
+      addEventListener('storage', () => { choice = stored(); apply(); });
+      addEventListener('DOMContentLoaded', () => {
+        // A page can place its own .theme-toggle; otherwise it goes in the corner.
+        button = document.querySelector('.theme-toggle')
+          || document.body.appendChild(Object.assign(document.createElement('button'), { type: 'button', className: 'theme-toggle' }));
+        button.addEventListener('click', () => {
+          const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+          choice = next === systemTheme() ? null : next;
+          try { choice ? localStorage.setItem('md-theme', choice) : localStorage.removeItem('md-theme'); } catch {}
+          apply();
+        });
+        apply();
+      });
+    })();
+  </script>
+  <title>Resonance — Your music, arranged around you</title>
+  <meta name="description" content="An experimental native macOS client for Navidrome, made to bring music hoarding into the streaming era.">
+  <meta property="og:title" content="Resonance">
+  <meta property="og:description" content="Your music, arranged around you.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/resonance-social.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Resonance">
+  <meta name="twitter:description" content="Your music, arranged around you.">
+  <meta name="twitter:image" content="assets/resonance-social.png">
+  <link rel="icon" href="assets/favicon.png?v=2" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="assets/resonance-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Light is the coral-to-magenta default from styles.css; dark is the same gradient after
+       dark, deep wine to plum, with the pink kept as glow. */
+    :root {
+      color-scheme: light;
+      --toggle: var(--cream);
+      --toggle-hover: #fff;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    [data-theme="dark"] body {
+      background: #200a1f;
+    }
+
+    [data-theme="dark"] .sheet {
+      background:
+        radial-gradient(ellipse 68% 58% at 50% 48%, rgba(255, 70, 120, 0.16), transparent 68%),
+        radial-gradient(ellipse 48% 72% at 92% 6%, rgba(255, 38, 153, 0.34), transparent 68%),
+        radial-gradient(ellipse 52% 62% at 4% 100%, rgba(250, 90, 69, 0.24), transparent 70%),
+        linear-gradient(117deg, #33101a 0%, #2e0c20 35%, #250a26 73%, #1c0929 100%);
+    }
+
+    [data-theme="dark"] .app-shadow {
+      background: #ff256a;
+      opacity: 0.38;
+    }
+
+    [data-theme="dark"] .app-window {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 42px 90px rgba(0, 0, 0, 0.45),
+        inset 0 3px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* theme toggle: a quiet icon button pinned to the top-right corner */
+    .theme-toggle {
+      position: fixed;
+      top: 6px;
+      right: 6px;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      color: var(--toggle);
+      cursor: pointer;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .theme-toggle:hover,
+    .theme-toggle:focus-visible { color: var(--toggle-hover); }
+    .theme-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+    .theme-toggle svg { display: block; width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <p class="brand" aria-label="Resonance">
+        <img src="assets/resonance-mark.png" alt="" width="64" height="64">
+        <span>Resonance</span>
+      </p>
+
+      <ul class="feature-rail" aria-label="Core features">
+        <li>native Mac player</li>
+        <li>Navidrome library</li>
+        <li>audition + curate</li>
+        <li>projects</li>
+        <li>listening history</li>
+      </ul>
+    </header>
+
+    <section class="product-stage" aria-labelledby="tagline">
+      <div class="app-shadow" aria-hidden="true"></div>
+      <figure class="app-window demo-window" aria-label="Resonance product demo">
+        <video
+          class="demo-video"
+          autoplay
+          controls
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="demos/2026-09-25-v1/resonance-poster-79337596893a.jpg"
+        >
+          <source src="demos/2026-09-25-v1/resonance-demo-2ee3e715f3a6.mp4" type="video/mp4">
+        </video>
+      </figure>
+    </section>
+
+    <footer class="footer">
+      <h1 id="tagline">Your music,<br>arranged around you.</h1>
+      <div class="download-group">
+        <a class="source-link" href="https://github.com/mduncs/resonance-app">View source</a>
+        <a class="download-link" href="https://github.com/mduncs/resonance-app/releases/latest">
+          Download for Mac <b>↓</b>
+        </a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
